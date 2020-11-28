@@ -26,7 +26,7 @@ namespace PublicApi.Responses
         public Dictionary<string, string> moderators { get; set; }
         public DateTime? created { get; set; }
         public Assets assets { get; set; }
-        public Link[] links { get; set; }
+        public RegionLink[] links { get; set; }
     }
 
     public class Names
@@ -138,11 +138,4 @@ namespace PublicApi.Responses
         public int width { get; set; }
         public int height { get; set; }
     }
-
-    public class Link
-    {
-        public string rel { get; set; }
-        public string uri { get; set; }
-    }
-
 }

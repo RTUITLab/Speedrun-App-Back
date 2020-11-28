@@ -16,5 +16,10 @@ namespace Web.Services
 
         [Get("/ajax_streams.php")]
         Task<HttpResponseMessage> Streams(string country, string haspb, int start);
+
+        [Get("/api/v1/regions")]
+        Task<SpeedranResponseWrapper<List<Region>>> Regions();
+        [Get("/api/v1/platforms")]
+        Task<SpeedranResponseWrapper<List<Platform>>> Platforms(int offset);
     }
 }

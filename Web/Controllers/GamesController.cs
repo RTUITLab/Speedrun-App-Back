@@ -34,9 +34,13 @@ namespace Web.Controllers
 
         [HttpGet("compact")]
         [SwaggerOperation(OperationId = "GetCompactGames")]
-        public async Task<IEnumerable<GameCompact>> GetCompacts(int offset = 0)
+        public async Task<IEnumerable<GameCompact>> GetCompacts(
+            int offset = 0, 
+            string platform = "", 
+            string sort = "mostactive",
+            bool unofficial = false)
         {
-            return (await gamesInterfase.GetGameCompacts(offset));
+            return (await gamesInterfase.GetGameCompacts(offset, platform, sort, unofficial));
         }
     }
 }
