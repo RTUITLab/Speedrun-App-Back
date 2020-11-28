@@ -1,0 +1,50 @@
+resources:
+- repo: self
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  tag: '$(Build.BuildId)'
+
+
+stages:
+- stage: BuildApp
+  displayName: Build app
+  jobs:
+  - job: BuildApp
+    displayName: Build app
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET 5 sdk'
+      inputs:
+        packageType: 'sdk'
+        version: '5.0.100'
+    - script: dotnet tool restore
+      displayName: dotnet tool restore
+    - script: dotnet nuke
+      displayName: dotnet nuke
+    - publish: deploy
+      artifact: speedrun-app-back
+      displayName: publish speedrun-app-back
+- stage: BuildImage
+  displayName: Build image
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  jobs:
+  - job: BuildImage
+    displayName: Build image
+    steps:
+    - download: current
+      artifact: speedrun-app-back
+      displayName: download speedrun-app-back
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        containerRegistry: 'rtuitlab connection by admin'
+        repository: 'rtuitlab/speedrun-app-web'
+        command: 'buildAndPush'
+        Dockerfile: '$(Pipeline.Workspace)/speedrun-app-back/Dockerfile'
+        buildContext: '$(Pipeline.Workspace)/speedrun-app-back'
+        tags: |
+          $(tag)
+          latest
