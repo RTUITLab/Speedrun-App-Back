@@ -1,18 +1,23 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Models;
 using Refit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Web.Data;
 using Web.Formatting;
 using Web.Services;
 
@@ -44,6 +49,8 @@ namespace Web
             services.AddAutoMapper(typeof(BaseProfile).Assembly);
             services.AddScoped<IGamesApi, GamesService>();
             services.AddScoped<IStreamsApi, StreamsService>();
+
+            services.AddDbContext<SpeedrunDbContext>(o => o.UseInMemoryDatabase("IN_MEMORY"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,8 +58,9 @@ namespace Web
         {
             using (var scope = scopefac.CreateScope())
             {
-                var gs = scope.ServiceProvider.GetRequiredService<IStreamsApi>();
-                gs.GetStreams().Wait();
+                var gs = scope.ServiceProvider.GetRequiredService<SpeedrunDbContext>();
+                gs.GameCategoryModerators.Add(new GameCategoryModerator { GameId = "mc", CategoryId = "mkeyl926", UserId= "73739616" });
+                gs.SaveChanges();
             }
             if (env.IsDevelopment())
             {
@@ -70,9 +78,14 @@ namespace Web
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.Use((HttpContext c, Func<Task> n) =>
+            {
+                Console.WriteLine(JsonSerializer.Serialize(c.Request.Headers));
+                return n();
+            });
             app.UseEndpoints(endpoints =>
             {
+
                 endpoints.MapControllers();
             });
         }

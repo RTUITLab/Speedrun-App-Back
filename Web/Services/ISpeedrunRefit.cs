@@ -13,6 +13,8 @@ namespace Web.Services
     {
         [Get("/api/v1/games")]
         Task<SpeedranResponseWrapper<List<Game>>> Games(int offset=0);
+        [Get("/api/v1/games/{gameId}")]
+        Task<SpeedranResponseWrapper<Game>> Game(string gameId);
         [Get("/api/v1/games/{gameId}/categories")]
         Task<SpeedranResponseWrapper<List<Category>>> Categories(string gameId);
         [Get("/ajax_streams.php")]
@@ -24,6 +26,6 @@ namespace Web.Services
         Task<SpeedranResponseWrapper<List<Platform>>> Platforms(int offset);
 
         [Get("/api/v1/leaderboards/{gameId}/category/{categoryId}")]
-        Task<SpeedranResponseWrapper<Leaderboard>> Leaderboard(string gameId, string categoryId);
+        Task<SpeedranResponseWrapper<Leaderboard>> Leaderboard(string gameId, string categoryId, string[] embed, int top = 100);
     }
 }

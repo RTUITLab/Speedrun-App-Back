@@ -6,6 +6,19 @@ using System.Threading.Tasks;
 
 namespace PublicApi.Responses
 {
+
+    public class PlatformsData
+    {
+        public PlatformsDataDatum[] data { get; set; }
+    }
+
+    public class PlatformsDataDatum
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public int released { get; set; }
+    }
+
     public class Leaderboard
     {
         public string weblink { get; set; }
@@ -19,11 +32,112 @@ namespace PublicApi.Responses
         public string timing { get; set; }
         public Values values { get; set; }
         public Run[] runs { get; set; }
-        public Link1[] links { get; set; }
+        public Link2[] links { get; set; }
+        public Players1 players { get; set; }
+        public PlatformsData platforms { get; set; }
     }
 
     public class Values
     {
+    }
+
+    public class Players1
+    {
+        public Datum[] data { get; set; }
+    }
+
+    public class Datum
+    {
+        public string rel { get; set; }
+        public string name { get; set; }
+        public Link[] links { get; set; }
+        public string id { get; set; }
+        public Names names { get; set; }
+        public string weblink { get; set; }
+        public string role { get; set; }
+        public DateTime signup { get; set; }
+        public Location location { get; set; }
+        public Twitch twitch { get; set; }
+        public object hitbox { get; set; }
+        public Youtube youtube { get; set; }
+        public Twitter twitter { get; set; }
+        public Speedrunslive speedrunslive { get; set; }
+    }
+
+    public class Names1
+    {
+        public string international { get; set; }
+        public object japanese { get; set; }
+    }
+
+    public class Names1tyle
+    {
+        public string style { get; set; }
+        public ColorFrom colorfrom { get; set; }
+        public ColorTo colorto { get; set; }
+        public Color color { get; set; }
+    }
+
+    public class ColorFrom
+    {
+        public string light { get; set; }
+        public string dark { get; set; }
+    }
+
+    public class ColorTo
+    {
+        public string light { get; set; }
+        public string dark { get; set; }
+    }
+
+    public class Color
+    {
+        public string light { get; set; }
+        public string dark { get; set; }
+    }
+
+    public class Location
+    {
+        public Country country { get; set; }
+        public Region2 region { get; set; }
+    }
+
+    public class Country
+    {
+        public string code { get; set; }
+        public Names1 names { get; set; }
+    }
+
+    public class Region2
+    {
+        public string code { get; set; }
+        public Names2 names { get; set; }
+    }
+
+    public class Names2
+    {
+        public string international { get; set; }
+        public object japanese { get; set; }
+    }
+
+    public class Twitch
+    {
+        public string uri { get; set; }
+    }
+
+    public class Youtube
+    {
+        public string uri { get; set; }
+    }
+
+    public class Twitter
+    {
+        public string uri { get; set; }
+    }
+
+    public class Speedrunslive
+    {
+        public string uri { get; set; }
     }
 
     public class Run
@@ -44,7 +158,6 @@ namespace PublicApi.Responses
         public Status status { get; set; }
         public Player[] players { get; set; }
         public string date { get; set; }
-        public DateTime submitted { get; set; }
         public Times times { get; set; }
         public System system { get; set; }
         public Splits splits { get; set; }
@@ -53,11 +166,11 @@ namespace PublicApi.Responses
 
     public class Videos
     {
-        public VideosLink[] links { get; set; }
+        public Link1[] links { get; set; }
         public string text { get; set; }
     }
 
-    public class VideosLink
+    public class Link1
     {
         public string uri { get; set; }
     }
@@ -72,13 +185,6 @@ namespace PublicApi.Responses
     public class Times
     {
         public string primary { get; set; }
-        public float primary_t { get; set; }
-        public string realtime { get; set; }
-        public float realtime_t { get; set; }
-        public object realtime_noloads { get; set; }
-        public int realtime_noloads_t { get; set; }
-        public string ingame { get; set; }
-        public float ingame_t { get; set; }
     }
 
     public class System
@@ -112,10 +218,11 @@ namespace PublicApi.Responses
         public string id { get; set; }
     }
 
-    public class Link1
+    public class Link2
     {
         public string rel { get; set; }
         public string uri { get; set; }
     }
+
 
 }

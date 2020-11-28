@@ -28,7 +28,13 @@ namespace Web.Controllers
         [SwaggerOperation(OperationId = "GetLeaderboard")]
         public async Task<Leaderboard> GetLeaderboard(string gameId, string categoryId)
         {
-            return (await speedrunRefit.Leaderboard(gameId, categoryId)).data;
+            var data =  (await speedrunRefit.Leaderboard(gameId, categoryId, new string []{ "players", "platforms" })).data;
+            data.platform = data.platforms.data[0].name;
+            data.runs.ToList().ForEach(i =>
+            {
+                i.run.players[0].name = data.players.data.FirstOrDefault(p => p.id == i.run.players[0].id)?.names?.international ?? "Monkey";
+            });
+            return data;
         }
     }
 }
