@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    image: rtuitlab/speedrun-app-web
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 300M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"

@@ -7,12 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicApi", "PublicApi\PublicApi.csproj", "{6D800424-8EED-4220-A108-9A04FD4D38B0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{8A7CC698-0E44-48D8-B1EF-8768107779ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A7CC698-0E44-48D8-B1EF-8768107779ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A7CC698-0E44-48D8-B1EF-8768107779ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94023163-C35F-4697-8CC6-34FDED4D7867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{94023163-C35F-4697-8CC6-34FDED4D7867}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94023163-C35F-4697-8CC6-34FDED4D7867}.Release|Any CPU.ActiveCfg = Release|Any CPU

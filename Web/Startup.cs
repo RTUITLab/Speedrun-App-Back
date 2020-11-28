@@ -47,7 +47,7 @@ namespace Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceScopeFactory scopefac)
         {
-            using(var scope = scopefac.CreateScope())
+            using (var scope = scopefac.CreateScope())
             {
                 var gs = scope.ServiceProvider.GetRequiredService<IStreamsApi>();
                 gs.GetStreams().Wait();
@@ -60,8 +60,10 @@ namespace Web
             }
 
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-            app.UseHttpsRedirection();
+            if (env.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseRouting();
 
