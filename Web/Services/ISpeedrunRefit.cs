@@ -22,5 +22,8 @@ namespace Web.Services
         Task<SpeedranResponseWrapper<List<Region>>> Regions();
         [Get("/api/v1/platforms")]
         Task<SpeedranResponseWrapper<List<Platform>>> Platforms(int offset);
+
+        [Get("/api/v1/leaderboards/{gameId}/category/{categoryId}")]
+        Task<SpeedranResponseWrapper<Leaderboard>> Leaderboard(string gameId, string categoryId);
     }
 }
