@@ -185,6 +185,15 @@ namespace PublicApi.Responses
     public class Times
     {
         public string primary { get; set; }
+        public double primary_t { get; set; }
+        public string prettyTime
+        {
+            get
+            {
+                var timeSpan = TimeSpan.FromSeconds(primary_t);
+                return $"{(timeSpan.Hours > 0 ? $"{timeSpan.Hours}ч " : "")}{(timeSpan.Minutes > 0 ? $"{timeSpan.Minutes}м " : "")}{(timeSpan.Seconds > 0 ? $"{timeSpan.Seconds}c" : "")}";
+            }
+        }
     }
 
     public class System
