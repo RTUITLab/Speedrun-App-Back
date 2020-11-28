@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Web.Formatting;
 using Web.Services;
 
 namespace Web
@@ -39,7 +41,7 @@ namespace Web
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://www.speedrun.com"));
 
             services.AddHttpClient("speedrun_site", client => client.BaseAddress = new Uri("https://www.speedrun.com"));
-
+            services.AddAutoMapper(typeof(BaseProfile).Assembly);
             services.AddScoped<IGamesApi, GamesService>();
             services.AddScoped<IStreamsApi, StreamsService>();
         }
