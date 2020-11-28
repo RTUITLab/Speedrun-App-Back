@@ -42,5 +42,12 @@ namespace Web.Controllers
         {
             return (await gamesInterfase.GetGameCompacts(offset, platform, sort, unofficial));
         }
+
+        [HttpGet("{gameId}/categories")]
+        [SwaggerOperation(OperationId = "GetCategories")]
+        public async Task<IEnumerable<Category>> GetCategories(string gameId)
+        {
+            return await gamesInterfase.Categories(gameId);
+        }
     }
 }

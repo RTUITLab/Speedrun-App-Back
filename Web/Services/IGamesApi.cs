@@ -12,5 +12,6 @@ namespace Web.Services
     {
         Task<SpeedranResponseWrapper<List<Game>>> Games(int offset=0);
         Task<List<GameCompact>> GetGameCompacts(int start = 0, string platform = null, string sort = "mostactive", bool unofficial = false);
+        Task<List<Category>> Categories(string gameId);
     }
 }

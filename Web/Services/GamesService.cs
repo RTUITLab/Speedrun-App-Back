@@ -27,6 +27,12 @@ namespace Web.Services
             this.gamesInterfaseRefit = gamesInterfaseRefit;
             this.logger = logger;
         }
+
+        public async Task<List<Category>> Categories(string gameId)
+        {
+            return (await gamesInterfaseRefit.Categories(gameId)).data; 
+        }
+
         public Task<SpeedranResponseWrapper<List<Game>>> Games(int offset = 0)
         {
             return gamesInterfaseRefit.Games(offset);

@@ -13,7 +13,8 @@ namespace Web.Services
     {
         [Get("/api/v1/games")]
         Task<SpeedranResponseWrapper<List<Game>>> Games(int offset=0);
-
+        [Get("/api/v1/games/{gameId}/categories")]
+        Task<SpeedranResponseWrapper<List<Category>>> Categories(string gameId);
         [Get("/ajax_streams.php")]
         Task<HttpResponseMessage> Streams(string country, string haspb, int start);
 
