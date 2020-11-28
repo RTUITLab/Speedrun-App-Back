@@ -48,3 +48,20 @@ stages:
         tags: |
           $(tag)
           latest
+- stage: UpdateService
+  jobs:
+  - deployment: Deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - download: none
+            - task: SSH@0
+              inputs:
+                sshEndpoint: 'swarm manager'
+                runOptions: 'commands'
+                commands: 'docker service update --image rtuitlab/speedrun-app-web:$(tag) --with-registry-auth speedrunapp_web'
+                readyTimeout: '20000'
