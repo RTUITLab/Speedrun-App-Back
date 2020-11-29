@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>SpeedrunAppBack.PublicApi</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Refit.HttpClientFactory" Version="6.0.0-preview.37" />

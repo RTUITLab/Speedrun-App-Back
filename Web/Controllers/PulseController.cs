@@ -62,10 +62,13 @@ namespace Web.Controllers
         [SwaggerOperation(OperationId = "SendPulseMessage")]
         [HttpPost("{gameId}")]
         public async Task<ActionResult<PulseMessageResponse>> Post(
-            [Required][FromHeader(Name = "userid")] string userId,
             [Required][FromRoute] string gameId,
             [Required][FromBody] string message)
         {
+            if (!HttpContext.Request.Headers.TryGetValue("userid", out var userId))
+            {
+                return BadRequest("Need userig from vk mini app");
+            }
             var record = new PulseMessage
             {
                 GameId = gameId,

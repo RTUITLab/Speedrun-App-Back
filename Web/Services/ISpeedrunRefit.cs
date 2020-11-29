@@ -12,7 +12,7 @@ namespace Web.Services
     public interface ISpeedrunRefit
     {
         [Get("/api/v1/games")]
-        Task<SpeedranResponseWrapper<List<Game>>> Games(int offset=0);
+        Task<SpeedranResponseWrapper<List<Game>>> Games(int offset = 0);
         [Get("/api/v1/games/{gameId}")]
         Task<SpeedranResponseWrapper<Game>> Game(string gameId);
         [Get("/api/v1/games/{gameId}/categories")]
@@ -27,5 +27,8 @@ namespace Web.Services
 
         [Get("/api/v1/leaderboards/{gameId}/category/{categoryId}")]
         Task<SpeedranResponseWrapper<Leaderboard>> Leaderboard(string gameId, string categoryId, string[] embed, int top = 100);
+
+        [Get("/api/v1/runs")]
+        Task<SpeedranResponseWrapper<List<SpeedrunAppBack.PublicApi.Responses.Run.RunModel>>> Runs(string[] embed, string orderby = "verify-date", string direction = "desc");
     }
 }
