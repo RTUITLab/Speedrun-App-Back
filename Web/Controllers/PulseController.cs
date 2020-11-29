@@ -60,10 +60,10 @@ namespace Web.Controllers
         }
 
         [SwaggerOperation(OperationId = "SendPulseMessage")]
-        [HttpPost("{gameId}")]
+        [HttpPost("{gameId}/{message}")]
         public async Task<ActionResult<PulseMessageResponse>> Post(
             [Required][FromRoute] string gameId,
-            [Required][FromBody] string message)
+            [Required][FromRoute] string message)
         {
             if (!HttpContext.Request.Headers.TryGetValue("userid", out var userId))
             {
@@ -79,6 +79,77 @@ namespace Web.Controllers
             context.PulseMessages.Add(record);
             await context.SaveChangesAsync();
             return mapper.Map<PulseMessageResponse>(record);
+        }
+
+        [SwaggerOperation(OperationId = "SubsribeToUser")]
+        [HttpPost("subscribetouser/{targetUserId}")]
+        public async Task<ActionResult> SubsribeToUser(
+            [FromRoute] string targetUserId)
+        {
+            if (!HttpContext.Request.Headers.TryGetValue("userid", out var userId))
+            {
+                return BadRequest("Need userig from vk mini app");
+            }
+            var stringUserId = userId.ToString();
+            if (targetUserId == stringUserId)
+            {
+                return BadRequest("Can't subscripe to self");
+            }
+            var current = await context.UserSubscriptions.Where(s => s.User1Id == stringUserId && s.User2Id == targetUserId).SingleOrDefaultAsync();
+            if (current == null)
+            {
+                context.UserSubscriptions.Add(new SpeedrunAppBack.Models.UserSubscription { User1Id = userId, User2Id = targetUserId });
+                await context.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
+        [SwaggerOperation(OperationId = "UnsubsribeFromUser")]
+        [HttpPost("unsubsribefromuser/{targetUserId}")]
+        public async Task<ActionResult> UnsubsribeFromUser(
+            [FromRoute] string targetUserId)
+        {
+            if (!HttpContext.Request.Headers.TryGetValue("userid", out var userId))
+            {
+                return BadRequest("Need userig from vk mini app");
+            }
+            var stringUserId = userId.ToString();
+            if (targetUserId == stringUserId)
+            {
+                return BadRequest("Can't unsubscripe from self");
+            }
+            var current = await context.UserSubscriptions.Where(s => s.User1Id == stringUserId && s.User2Id == targetUserId).SingleOrDefaultAsync();
+            if (current != null)
+            {
+                context.UserSubscriptions.Remove(current);
+                await context.SaveChangesAsync();
+            }   
+            return Ok();
+        }
+
+
+        [SwaggerOperation(OperationId = "GetMySubscriptions")]
+        [HttpGet("getmysubscriptions")]
+        public async Task<ActionResult<IEnumerable<string>>> GetMySubscriptions()
+        {
+            if (!HttpContext.Request.Headers.TryGetValue("userid", out var userId))
+            {
+                return BadRequest("Need userig from vk mini app");
+            }
+            var subsciptions = await context.UserSubscriptions.Where(s => s.User1Id == userId.ToString()).Select(p => p.User2Id).ToListAsync();
+            return subsciptions;
+        }
+
+        [SwaggerOperation(OperationId = "GetMySubscribers")]
+        [HttpGet("getmysubscribers")]
+        public async Task<ActionResult<IEnumerable<string>>> GetMySubscribers()
+        {
+            if (!HttpContext.Request.Headers.TryGetValue("userid", out var userId))
+            {
+                return BadRequest("Need userig from vk mini app");
+            }
+            var subsciptions = await context.UserSubscriptions.Where(s => s.User2Id == userId.ToString()).Select(p => p.User1Id).ToListAsync();
+            return subsciptions;
         }
     }
 }

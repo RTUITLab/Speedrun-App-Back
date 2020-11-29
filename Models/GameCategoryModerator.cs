@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpeedrunAppBack.Models;
+using System;
 
 namespace Models
 {

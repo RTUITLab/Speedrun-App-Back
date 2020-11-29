@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
+using SpeedrunAppBack.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Web.Data
         public DbSet<GameCategoryModerator> GameCategoryModerators { get; set; }
         public DbSet<PulseMessage> PulseMessages { get; set; }
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<UserSubscription> UserSubscriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +30,18 @@ namespace Web.Data
             modelBuilder.Entity<PulseMessage>(e =>
             {
                 e.HasKey(p => new { p.GameId, p.UserId, p.SendTime });
+            });
+
+            modelBuilder.Entity<UserSubscription>(e =>
+            {
+                e.HasKey(e => new { e.User1Id, e.User2Id });
+
+                e.HasOne(e => e.User1)
+                    .WithMany(e => e.SubscribtionsTo)
+                    .HasForeignKey(e => e.User1Id);
+                e.HasOne(e => e.User2)
+                    .WithMany(e => e.SubscribtionsFrom)
+                    .HasForeignKey(e => e.User2Id);
             });
         }
     }

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Models;
 using Refit;
+using SpeedrunAppBack.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,11 +50,11 @@ namespace Web
             services.AddHttpClient("speedrun_site", client => client.BaseAddress = new Uri("https://www.speedrun.com"));
             services.AddAutoMapper(typeof(BaseProfile).Assembly);
             services.AddScoped<IGamesApi, GamesService>();
-            services.AddScoped<IStreamsApi, StreamsService>(); 
+            services.AddScoped<IStreamsApi, StreamsService>();
             services.AddMemoryCache();
 
 
-            services.AddDbContext<SpeedrunDbContext>(o => o.UseInMemoryDatabase("IN_MEMORY"));
+            services.AddDbContext<SpeedrunDbContext>(o => o.UseNpgsql(Configuration.GetConnectionString("PostgresDB")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,9 +63,36 @@ namespace Web
             using (var scope = scopefac.CreateScope())
             {
                 var gs = scope.ServiceProvider.GetRequiredService<SpeedrunDbContext>();
-                gs.GameCategoryModerators.Add(new GameCategoryModerator { GameId = "mc", CategoryId = "mkeyl926", UserId= "73739616" });
-                gs.PulseMessages.Add(new PulseMessage { GameId = "mc", UserId= "73739616", Message = "Hello, pulse", SendTime = DateTimeOffset.UtcNow });
-                gs.SaveChanges();
+                try
+                {
+                    gs.Database.Migrate();
+                    var defaultModerator = gs.GameCategoryModerators.Where(g => g.GameId == "mc" && g.CategoryId == "mkeyl926" && g.UserId == "73739616").SingleOrDefault();
+                    if (defaultModerator == null)
+                    {
+                        var user = gs.Users.Where(u => u.Id == "73739616").SingleOrDefault();
+                        if (user == null)
+                        {
+                            gs.Users.Add(new UserModel { Id = "73739616" });
+                            gs.SaveChanges();
+                        }
+                        defaultModerator = new GameCategoryModerator { GameId = "mc", CategoryId = "mkeyl926", UserId = "73739616" };
+                        gs.GameCategoryModerators.Add(defaultModerator);
+                        gs.SaveChanges();
+                    }
+                    var defaultMessages = gs.PulseMessages.Where(g => g.GameId == "mc").Any();
+                    if (!defaultMessages)
+                    {
+                        gs.PulseMessages.Add(new PulseMessage { GameId = "mc", UserId = "73739616", Message = "Hello, pulse", SendTime = DateTimeOffset.UtcNow });
+                        gs.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
+                }
             }
             if (env.IsDevelopment())
             {
@@ -82,11 +110,22 @@ namespace Web
             app.UseRouting();
 
             app.UseAuthorization();
-            //app.Use((HttpContext c, Func<Task> n) =>
-            //{
-            //    Console.WriteLine(JsonSerializer.Serialize(c.Request.Headers));
-            //    return n();
-            //});
+            app.Use(async (HttpContext c, Func<Task> n) =>
+            {
+                if (!c.Request.Headers.TryGetValue("userid", out var userId))
+                {
+                    await n();
+                    return;
+                }
+                var db = c.RequestServices.GetRequiredService<SpeedrunDbContext>();
+                var existing = await db.Users.Where(u => u.Id == userId.ToString()).SingleOrDefaultAsync();
+                if (existing == null)
+                {
+                    db.Users.Add(new UserModel { Id = userId });
+                    await db.SaveChangesAsync();
+                }
+                await n();
+            });
             app.UseEndpoints(endpoints =>
             {
 

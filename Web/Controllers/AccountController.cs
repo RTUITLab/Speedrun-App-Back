@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models;
+using SpeedrunAppBack.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -35,20 +36,26 @@ namespace Web.Controllers
 
         [HttpGet("isrunner")]
         [SwaggerOperation(OperationId = "IsRunner")]
-        public async Task<bool> IsRunner(
-            [Required][FromHeader(Name = "userid")] string userId)
+        public async Task<ActionResult<bool>> IsRunner()
         {
-            return (await context.Users.Where(u => u.Id == userId).SingleOrDefaultAsync())?.IsRunner ?? false;
+            if (!HttpContext.Request.Headers.TryGetValue("userid", out var userId))
+            {
+                return BadRequest("Need userig from vk mini app");
+            }
+            return (await context.Users.Where(u => u.Id == userId.ToString()).SingleOrDefaultAsync())?.IsRunner ?? false;
         }
 
 
-        [HttpPost("isrunner")]
+        [HttpPost("isrunner/{isRunner}")]
         [SwaggerOperation(OperationId = "SetIsRunner")]
-        public async Task<bool> SetIsRunner(
-            [Required][FromHeader(Name = "userid")] string userId,
-            [Required][FromBody] bool isRunner)
+        public async Task<ActionResult<bool>> SetIsRunner(bool isRunner)
         {
-            var record = await context.Users.Where(u => u.Id == userId).SingleOrDefaultAsync();
+            if (!HttpContext.Request.Headers.TryGetValue("userid", out var userId))
+            {
+                return BadRequest("Need userig from vk mini app");
+            }
+            logger.LogWarning($"user {userId} to {isRunner}");
+            var record = await context.Users.Where(u => u.Id == userId.ToString()).SingleOrDefaultAsync();
             if (record == null)
             {
                 record = new UserModel
