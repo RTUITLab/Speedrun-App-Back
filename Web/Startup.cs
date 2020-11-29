@@ -49,7 +49,9 @@ namespace Web
             services.AddHttpClient("speedrun_site", client => client.BaseAddress = new Uri("https://www.speedrun.com"));
             services.AddAutoMapper(typeof(BaseProfile).Assembly);
             services.AddScoped<IGamesApi, GamesService>();
-            services.AddScoped<IStreamsApi, StreamsService>();
+            services.AddScoped<IStreamsApi, StreamsService>(); 
+            services.AddMemoryCache();
+
 
             services.AddDbContext<SpeedrunDbContext>(o => o.UseInMemoryDatabase("IN_MEMORY"));
         }

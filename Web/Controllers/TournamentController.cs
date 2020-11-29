@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using PublicApi.Responses;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,7 +20,7 @@ namespace Web.Controllers
         private readonly IStreamsApi streamsApi;
         private readonly IMapper mapper;
         private readonly ILogger<TournamentController> logger;
-
+        private readonly IMemoryCache cache;
         private string[] categories = new string[] {
             "Any% Glitchless",
             "Any%",
@@ -31,17 +32,23 @@ namespace Web.Controllers
         public TournamentController(
             IStreamsApi streamsApi, 
             IMapper mapper,
-            ILogger<TournamentController> logger)
+            ILogger<TournamentController> logger,
+            IMemoryCache cache)
         {
             this.streamsApi = streamsApi;
             this.mapper = mapper;
             this.logger = logger;
+            this.cache = cache;
         }
 
         [HttpGet]
         [SwaggerOperation(OperationId = "GetTournament")]
         public async Task<IEnumerable<TournamentCategory>> GetTournament()
         {
+            if (cache.TryGetValue<IEnumerable<TournamentCategory>>("GetTournament", out var cached))
+            {
+                return cached;
+            }
             Stream getStream(List<Stream> streams, Random rand)
             {
                 var stream = streams[rand.Next(streams.Count)];
@@ -50,7 +57,7 @@ namespace Web.Controllers
             }
             var streams = await streamsApi.GetStreams();
             var random = new Random();
-            return categories
+            var calculated = categories
                 .Select(c => (category: c, count: random.Next(1, 5)))
                 .Select(p => new TournamentCategory
                 {
@@ -60,6 +67,10 @@ namespace Web.Controllers
                                         .Select(s => mapper.Map<Tournament>(s))
                                         .ToList()
                 }).ToList();
+
+            cache.Set("GetTournament", calculated, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromHours(1)));
+
+            return calculated;
         }
     }
 }
