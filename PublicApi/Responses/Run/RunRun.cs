@@ -387,7 +387,7 @@ namespace SpeedrunAppBack.PublicApi.Responses.Run
             get
             {
                 var timeSpan = TimeSpan.FromSeconds(primary_t);
-                return $"{(timeSpan.Hours > 0 ? $"{timeSpan.Hours}ч " : "")}{(timeSpan.Minutes > 0 ? $"{timeSpan.Minutes}м " : "")}{(timeSpan.Seconds > 0 ? $"{timeSpan.Seconds}c" : "")}{(timeSpan.TotalSeconds < 1 ? $"{timeSpan.TotalMilliseconds}мс" : "")}";
+                return $"{(timeSpan.Hours > 0 ? $"{timeSpan.Hours}ч " : "")}{(timeSpan.Minutes > 0 ? $"{timeSpan.Minutes}м " : "")}{(timeSpan.Seconds > 0 ? $"{timeSpan.Seconds}c" : "")}{(timeSpan.Milliseconds > 0 ? $"{timeSpan.Milliseconds}мс" : "")}";
             }
         }
     }
