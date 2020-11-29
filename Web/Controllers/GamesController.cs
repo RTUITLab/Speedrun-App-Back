@@ -42,8 +42,16 @@ namespace Web.Controllers
         public async Task<IEnumerable<Game>> GetGamesByIds([FromQuery]List<string> ids)
         {
             var requests = ids.Select(id => speedrunRefit.Game(id)).ToArray();
+            var runTasks = ids.Select(id => speedrunRefit.Runs(id)).ToArray();
             await Task.WhenAll(requests);
-            return requests.Select(r => r.Result.data);
+            var data = requests.Select(r => r.Result.data).ToList();
+            await Task.WhenAll(runTasks);
+            var runs = runTasks.SelectMany(r => r.Result.data).ToList();
+            for (int i = 0; i < data.Count; i++)
+            {
+                data[i].favoriteTime = runs[i]?.times?.prettyTime;
+            }
+            return data;
         }
 
         [HttpGet("compact")]

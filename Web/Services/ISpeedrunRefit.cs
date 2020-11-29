@@ -30,5 +30,18 @@ namespace Web.Services
 
         [Get("/api/v1/runs")]
         Task<SpeedranResponseWrapper<List<SpeedrunAppBack.PublicApi.Responses.Run.RunModel>>> Runs(string[] embed, string orderby = "verify-date", string direction = "desc");
+        [Get("/api/v1/runs")]
+        Task<RunForFavorite> Runs(string gameId, string orderby = "verify-date", string direction = "desc");
+
+    }
+    public class RunForFavorite
+    {
+        public List<DataForFavorite> data { get; set; }
+    }
+
+    public class DataForFavorite
+    {
+        public string game { get; set; }
+        public Times times { get; set; }
     }
 }

@@ -191,7 +191,7 @@ namespace PublicApi.Responses
             get
             {
                 var timeSpan = TimeSpan.FromSeconds(primary_t);
-                return $"{(timeSpan.Hours > 0 ? $"{timeSpan.Hours}ч " : "")}{(timeSpan.Minutes > 0 ? $"{timeSpan.Minutes}м " : "")}{(timeSpan.Seconds > 0 ? $"{timeSpan.Seconds}c" : "")}{(timeSpan.Milliseconds > 0 ? $"{timeSpan.Milliseconds}мс":"")}";
+                return $"{(timeSpan.Hours > 0 ? $"{timeSpan.Hours}ч " : "")}{(timeSpan.Minutes > 0 ? $"{timeSpan.Minutes}м " : "")}{(timeSpan.Seconds > 0 ? $"{timeSpan.Seconds}c" : "")}{(timeSpan.Milliseconds > 0 ? $" {timeSpan.Milliseconds}мс":"")}";
             }
         }
     }

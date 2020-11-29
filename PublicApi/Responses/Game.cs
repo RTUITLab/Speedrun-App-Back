@@ -8,6 +8,7 @@ namespace PublicApi.Responses
 {
     public class Game
     {
+        public string favoriteTime { get; set; }
         public string id { get; set; }
         public Names names { get; set; }
         public string abbreviation { get; set; }
