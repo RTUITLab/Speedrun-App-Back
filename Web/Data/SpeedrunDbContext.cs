@@ -14,6 +14,8 @@ namespace Web.Data
 
         }
         public DbSet<GameCategoryModerator> GameCategoryModerators { get; set; }
+        public DbSet<PulseMessage> PulseMessages { get; set; }
+        public DbSet<UserModel> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +23,11 @@ namespace Web.Data
             modelBuilder.Entity<GameCategoryModerator>(e =>
             {
                 e.HasKey(m => new { m.GameId, m.CategoryId, m.UserId });
+            });
+
+            modelBuilder.Entity<PulseMessage>(e =>
+            {
+                e.HasKey(p => new { p.GameId, p.UserId, p.SendTime });
             });
         }
     }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Models;
 using PublicApi.Responses;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Web.Formatting
         public BaseProfile()
         {
             CreateMap<Stream, Tournament>();
+            CreateMap<PulseMessage, PulseMessageResponse>();
         }
     }
 }

@@ -41,6 +41,7 @@ namespace Web
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web", Version = "v1" });
                 c.EnableAnnotations();
+                c.SchemaFilter<EnumSchemaFilter>();
             });
             services.AddRefitClient<ISpeedrunRefit>()
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://www.speedrun.com"));
@@ -60,6 +61,7 @@ namespace Web
             {
                 var gs = scope.ServiceProvider.GetRequiredService<SpeedrunDbContext>();
                 gs.GameCategoryModerators.Add(new GameCategoryModerator { GameId = "mc", CategoryId = "mkeyl926", UserId= "73739616" });
+                gs.PulseMessages.Add(new PulseMessage { GameId = "mc", UserId= "73739616", Message = "Hello, pulse", SendTime = DateTimeOffset.UtcNow });
                 gs.SaveChanges();
             }
             if (env.IsDevelopment())
@@ -78,11 +80,11 @@ namespace Web
             app.UseRouting();
 
             app.UseAuthorization();
-            app.Use((HttpContext c, Func<Task> n) =>
-            {
-                Console.WriteLine(JsonSerializer.Serialize(c.Request.Headers));
-                return n();
-            });
+            //app.Use((HttpContext c, Func<Task> n) =>
+            //{
+            //    Console.WriteLine(JsonSerializer.Serialize(c.Request.Headers));
+            //    return n();
+            //});
             app.UseEndpoints(endpoints =>
             {
 
