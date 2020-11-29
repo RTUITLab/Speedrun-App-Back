@@ -376,12 +376,6 @@ namespace SpeedrunAppBack.PublicApi.Responses.Run
     {
         public string primary { get; set; }
         public float primary_t { get; set; }
-        public string realtime { get; set; }
-        public float realtime_t { get; set; }
-        public object realtime_noloads { get; set; }
-        public int realtime_noloads_t { get; set; }
-        public string ingame { get; set; }
-        public float ingame_t { get; set; }
         public string prettyTime
         {
             get
